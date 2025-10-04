@@ -1,0 +1,21 @@
+# Generated parser files
+y.tab.c
+y.tab.h
+
+# Generated lexer files
+lex.yy.c
+
+# Compiled binaries
+out
+*.o
+*.exe
+
+# Editor/IDE files
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
