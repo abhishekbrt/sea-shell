@@ -1,0 +1,3 @@
+
+
+void printError(char* message);
