@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include<sys/wait.h>
 #include "util.h"
 #include "command.h"
 
@@ -116,8 +117,8 @@ void insertArgument(SimpleCommand *simpleCommand, char *argument)
         printError("NULL argument in insertArgument");
         return;
     }
-    
-    if (simpleCommand->noOfArguments >= simpleCommand->noOfAvailableArguments)
+    //leave one space for NULL terminator for exec() 
+    if (simpleCommand->noOfArguments >= simpleCommand->noOfAvailableArguments-1)
     {
         printError("too many arguments greater than limit");
         return;
@@ -191,4 +192,33 @@ void printCommand() {
     // Print background status
     printf("\nBackground: %s\n", currentCommand.background ? "yes" : "no");
     printf("==================================================\n\n");
+}
+
+
+void Execute(){
+    pid_t ret;
+    for(int i=0;i<currentCommand.noOfSimpleCommands;i++){
+        SimpleCommand *cmd=currentCommand.simpleCommands[i];
+        if(cmd!=NULL && cmd->noOfArguments > 0 && cmd->noOfArguments < cmd->noOfAvailableArguments){
+            cmd->arguments[cmd->noOfArguments]=NULL;
+        }else{
+            printError("Error in Execute() function");
+            return;
+        }
+        char **args=cmd->arguments;
+        ret=fork();
+        if(ret==0){
+            printf("child process ");
+            execvp(args[0],args);
+            perror("error in execvp");
+            exit(1);
+        }else if(ret <0){
+            perror("error in fork()");
+            return;
+        }
+    }
+    if (!currentCommand.background) {
+        waitpid(ret, NULL, 0);
+    }
+
 }

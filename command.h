@@ -28,6 +28,7 @@ void Command_init();
 void Command_clear();
 void insertSimpleCommand(SimpleCommand *cmd);
 void printCommand();
+void Execute();
 
 SimpleCommand *new_simpleCommand();
 void insertArgument(SimpleCommand *cmd, char *argument);
