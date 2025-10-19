@@ -8,7 +8,7 @@ TARGET = out
 all: $(TARGET)
 
 $(TARGET): lex.yy.c y.tab.c
-	$(CC) $(CFLAGS) lex.yy.c y.tab.c -o $(TARGET)
+	$(CC) $(CFLAGS) lex.yy.c y.tab.c command.c util.c -o $(TARGET)
 
 y.tab.c y.tab.h: shell.y
 	$(YACC) -d shell.y
