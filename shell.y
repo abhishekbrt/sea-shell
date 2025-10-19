@@ -22,15 +22,14 @@ goal:command_list;
 
 arg_list:
         arg_list WORD {
-                printf("Found argument: %s\n",$2);   
                 insertArgument(currentSimpleCmd,$2);   
         }
-        | /*empty*/ {printf("Empty argument list\n"); }
+        | /*empty*/ {
+                }
         ;
 
 cmd_and_args:
         WORD {
-                printf("intial command word: %s\n",$1);
                 //create new simple command
                 currentSimpleCmd=new_simpleCommand();
                 if(currentSimpleCmd==NULL){
@@ -42,36 +41,31 @@ cmd_and_args:
         
         }
         arg_list {
-                printf("Command: %s\n", $1); 
-                //after all argument parsed add currentSimplecmd to the pipeline
+                //after all argument parsed add currentSimplecmd to the Command
                 insertSimpleCommand(currentSimpleCmd);
-                printf("simple command added with %d arguments\n",currentSimpleCmd->noOfArguments);
                 currentSimpleCmd=NULL;
         }
         ;
 
 
 pipe_list:
-        pipe_list PIPE cmd_and_args { printf("Adding command to pipeline\n");}
-        | cmd_and_args {printf("Single command (no pipe)\n"); }
+        pipe_list PIPE cmd_and_args { }
+        | cmd_and_args {
+                }
         ;
 
 io_modifier:
         GREATGREAT WORD {
-                printf("Redirect append to: %s\n", $2); 
                 setOutputFile($2); //TODO: correction required: it should append the word to the end of file
                 }
         | GREAT WORD { 
-                printf("Redirect output to: %s\n", $2);
                 setOutputFile($2);
                  }
         | GREATAMPERSAND WORD {
-                printf("Redirect stdout+stderr to: %s\n", $2);
                 setOutputFile($2);
                 setErrorFile($2);
                  }
         | LESS WORD {
-                printf("Redirect input from: %s\n", $2);
                 setInputFile($2);
                  }
         | GREAT error {
@@ -99,7 +93,6 @@ io_modifier_list:
 
 background_optional:
         AMPERSAND { 
-                printf("Running in background!\n");
                 setBackgroundProcess(1);
                  }
         | /*empty*/ { setBackgroundProcess(0); }
@@ -107,8 +100,7 @@ background_optional:
 
 command_line:
         pipe_list io_modifier_list background_optional NEWLINE {  
-            printf("=== Command complete ===\n");
-            printCommand(); //print the command table
+            Execute();
             Command_clear(); //clear for the next round
             printf("sea-shell> ");
         }
